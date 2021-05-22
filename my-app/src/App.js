@@ -11,7 +11,10 @@ const App = () => {
   const [baseCurrency, setBaseCurrency] = useState()
   const [targetCurrency, setTargetCurrency] = useState()
 
-  const [amount, setAmount] = useState()
+  const [baseCountry, setBaseCountry] = useState();
+  const [targetCountry, setTargetCountry] = useState();
+
+  // const [amount, setAmount] = useState()
   const [base, setBase] = useState(1)
   const [target, setTarget] = useState(1)
 
@@ -25,7 +28,10 @@ const App = () => {
     setCountries(countriesData);
 
     setBaseCurrency(countriesData[0].currencies[0].code);
-    setTargetCurrency(countriesData[1].currencies[0].code);
+    setTargetCurrency(countriesData[0].currencies[0].code);
+    
+    setBaseCountry(countriesData[0].name);
+    setTargetCountry(countriesData[0].name);
 
     setBase(1);
     setTarget(1);
@@ -39,14 +45,14 @@ useEffect(async ()=>{
   if( base != null && target != null){
     if(baseAmountChange){
       const conversion = await getConversion(baseCurrency,targetCurrency,base);
-      setTarget(conversion.data.conversion_result);
-
+      setTarget((conversion.data.conversion_result));
     }
     else{
       const conversion = await getConversion(baseCurrency,targetCurrency,target);
-      setBase(conversion.data.conversion_result);
+      setBase((conversion.data.conversion_result));
 
     }
+
   }
 },[baseCurrency, targetCurrency,base,target] )
 
@@ -60,6 +66,16 @@ useEffect(async ()=>{
     setTarget(e.target.value);
     setbaseAmountChange(false);
   }
+
+function setBaseCountryCurrency(e){
+  setBaseCurrency(e.target.value)
+}
+
+function setTargetCountryCurrency(e){
+  setTargetCurrency(e.target.value)
+}
+
+
 
 
   return (
@@ -85,10 +101,11 @@ useEffect(async ()=>{
           <Convert
           countries={countries}
           onChangeAmount={ baseChange}
-          onChangeCurrency={e => setBaseCurrency(e.target.value)}
+          onChangeCurrency={setBaseCountryCurrency}
           baseCurrency = {baseCurrency}
           targetCurrency = {targetCurrency}
           amount={base}
+          country ={baseCountry}
           />
           
           {/* <div className="icon-wrapper align-center"><i className="fa fas fa-arrows-v swap "></i></div> */}
@@ -96,10 +113,11 @@ useEffect(async ()=>{
                 <Convert
           countries={countries}
           onChangeAmount={ targetChange}
-          onChangeCurrency={e => setTargetCurrency(e.target.value)}
+          onChangeCurrency={setTargetCountryCurrency}
           baseCurrency = {targetCurrency}
           targetCurrency = {baseCurrency}
           amount={target}
+          country={targetCountry}
           />
         </div>
 
